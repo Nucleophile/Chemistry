@@ -4,6 +4,7 @@
       <li v-for="(reaction, index) in reactions" :key="reaction">
         <ReactionInput
           :reactionNumber="index + 1"
+          :reaction="reaction"
           @remove-reaction="removeReaction"
           @reaction-input="reactionInput"
         />
@@ -29,21 +30,35 @@ export default {
   data() {
     return {
       reactionsNumber: 1,
-      reactions: [[[], []]]
+      reactions: [
+        [
+          [
+            [1, 'A']
+          ],
+          [
+            [3, 'C']
+          ]
+        ]
+      ]
     }
   },
   methods: {
     addReaction() {
-      // this.reactionsNumber++;
-      this.reactions.push([]);
+      this.reactions.push([
+        [[1, '']],
+        [[1, '']]
+      ]);
     },
     removeReaction(reactionNumber) {
       this.reactions.splice(reactionNumber - 1, 1);
     },
     reactionInput(reactionNumber, reactionPart, substances) {
-      this.reactions[reactionNumber - 1][reactionPart] = substances;
+      console.log(reactionNumber, reactionPart, substances)
+      // this.reactions[reactionNumber - 1][reactionPart] = substances;
+      // console.log(this.reactions)
     },
     proceed() {
+      console.log(this.reactions);
     }
   }
 }
