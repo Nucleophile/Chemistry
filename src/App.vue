@@ -1,18 +1,21 @@
 <template>
-  <form action="" method="POST" @submit.prevent="proceed">
-    <ul>
-      <li v-for="(reaction, index) in reactions" :key="reaction">
-        <ReactionInput
-          :reactionNumber="index + 1"
-          :reaction="reaction"
-          @remove-reaction="removeReaction"
-          @reaction-input="reactionInput"
-        />
-      </li>
-    </ul>
-    <AddReactionBtn @add-reaction="addReaction"/>
-    <ProceedBtn/>
-  </form>
+  <div class="content">
+    <form action="" method="POST" @submit.prevent="proceed">
+      <ul>
+        <li v-for="(reaction, index) in reactions" :key="reaction">
+          <ReactionInput
+            :reactionNumber="index + 1"
+            :reaction="reaction"
+            :reactions="reactions"
+            @remove-reaction="removeReaction"
+            @toggle-reaction-type="toggleReactionType"
+          />
+        </li>
+      </ul>
+      <AddReactionBtn @add-reaction="addReaction"/>
+      <ProceedBtn/>
+    </form>
+  </div>
 </template>
 
 <script>
@@ -32,11 +35,18 @@ export default {
       reactionsNumber: 1,
       reactions: [
         [
+          false, // reaction reversibility identificator
           [
-            [1, 'A']
+            {
+              coef: 1,
+              substance: 'A'
+            }
           ],
           [
-            [3, 'C']
+            {
+              coef: 1,
+              substance: 'A'
+            }
           ]
         ]
       ]
@@ -45,17 +55,22 @@ export default {
   methods: {
     addReaction() {
       this.reactions.push([
-        [[1, '']],
-        [[1, '']]
+        false,
+        [{
+          coef: 1,
+          substance: 'A'
+        }],
+        [{
+          coef: 1,
+          substance: 'A'
+        }]
       ]);
     },
     removeReaction(reactionNumber) {
-      this.reactions.splice(reactionNumber - 1, 1);
+      this.reactions.splice(reactionNumber, 1);
     },
-    reactionInput(reactionNumber, reactionPart, substances) {
-      console.log(reactionNumber, reactionPart, substances)
-      // this.reactions[reactionNumber - 1][reactionPart] = substances;
-      // console.log(this.reactions)
+    toggleReactionType(reactionNumber) {
+      this.reactions[reactionNumber][0] = !this.reactions[reactionNumber][0];
     },
     proceed() {
       console.log(this.reactions);
@@ -65,14 +80,24 @@ export default {
 </script>
 
 <style>
-#app {
+body {
+  margin: 0;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
 }
+.content {
+  max-width: 1020px;
+  margin: 0 auto;
+  padding: 15px;
+}
 ul {
   list-style: none;
+  margin: 0;
   padding: 0;
+}
+label {
+  display: block;
 }
 </style>

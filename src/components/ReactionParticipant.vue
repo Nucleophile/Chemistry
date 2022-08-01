@@ -1,28 +1,54 @@
 <template>
-  <input
+  <ReactionParticipantInput
     type="number"
-    v-model="coef"
-    @input="$emit('participantInput', this.participant, 0, coef)"
-  >
-  <input
+    :inputValue="coef"
+    inputValueName="coef"
+    :index="index"
+    :participant="participant"
+    @participant-input="participantInput"
+  />
+  <ReactionParticipantInput
     type="text"
-    v-model="substance"
-    @input="$emit('participantInput', this.participant, 1, substance)"
-  >
+    :inputValue="substance"
+    inputValueName="substance"
+    :index="index"
+    :participant="participant"
+    @participant-input="participantInput"
+  />
+  <button
+    type="button"
+    v-if="participants.length > 1"
+    @click="$emit('removeReactionParticipant', participants, index)"
+  >Remove participant</button>
 </template>
 
 <script>
+import ReactionParticipantInput from './ReactionParticipantInput.vue';
+
 export default {
   name: 'ReactionParticipant',
   data() {
     return {
-      coef: this.participant[0],
-      substance: this.participant[1]
+      coef: this.participant.coef,
+      substance: this.participant.substance
     }
   },
   props: {
-    'participant': Array
+    participants: Array,
+    participant: Object,
+    index: Number
   },
-  emits: ['participantInput']
+  methods: {
+    participantInput(participant, key, newValue) {
+      participant[key] = newValue;
+    }
+  },
+  components: {
+    ReactionParticipantInput
+  },
+  emits: ['removeReactionParticipant']
 }
 </script>
+
+<style>
+</style>

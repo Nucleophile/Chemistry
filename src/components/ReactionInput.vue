@@ -1,73 +1,49 @@
 <template>
-    <label for="reaction-1">Reaction {{ reactionNumber }}</label>
-    <template v-for="(participant, index) in reactants" :key="participant">
-      <ReactionParticipant
-        :participant="participant"
-        @participant-input="participantInput"
-      />
-      <span v-if="index < reactants.length - 1">+</span>
-    </template>
-
-    <AddReactionParticipantBtn
-      @add-reaction-participant="addReactionParticipant"
+    <label :for="'reaction-' + reactionNumber + '-1'">Reaction {{ reactionNumber }}</label>
+    <HalfReactionInput
       :participants="reactants"
     />
     
-    <button type="button" @click="toggleReactionType">
-      <span v-if="reversible">=</span>
-      <span v-else>-></span>
+    <button type="button" @click="$emit('toggleReactionType', reactionNumber - 1)">
+      <span v-if="reaction[0]">↔</span>
+      <span v-else>→</span>
     </button>
 
-    <template v-for="(participant, index) in products" :key="participant">
-      <ReactionParticipant
-        :participant="participant"
-        @participant-input="participantInput"
-      />
-      <span v-if="index < products.length - 1">+</span>
-    </template>
-
-    <AddReactionParticipantBtn
-      @add-reaction-participant="addReactionParticipant"
+    <HalfReactionInput
       :participants="products"
     />
 
-    <button type="button" @click="$emit('removeReaction', reactionNumber)">Remove</button>
+    <button
+      type="button"
+      v-if="reactions.length > 1"
+      @click="$emit('removeReaction', reactionNumber - 1)"
+    >Remove</button>
 </template>
 
 <script>
-
-import ReactionParticipant from './ReactionParticipant.vue';
-import AddReactionParticipantBtn from './AddReactionParticipantBtn.vue';
+ 
+import HalfReactionInput from './HalfReactionInput.vue';
 
 export default {
     name: 'ReactionInput',
     data() {
         return {
-            reversible: false,
-            reactants: this.reaction[0],
-            products: this.reaction[1] 
+            reactants: this.reaction[1],
+            products: this.reaction[2]
         };
     },
     props: {
         reactionNumber: Number,
-        reaction: Array
+        reaction: Array,
+        reactions: Array
     },
     methods: {
-        toggleReactionType() {
-            this.reversible = !this.reversible;
-        },
-        participantInput(participant, arrNumber, newValue) {
-          participant[arrNumber] = newValue;
-        },
-        addReactionParticipant(participants) {
-          participants.push([1, '']);
-        }
+        
     },
-    emits: ['removeReaction', 'reactionInput'],
+    emits: ['toggleReactionType', 'removeReaction'],
     components: {
-      ReactionParticipant,
-      AddReactionParticipantBtn
-    }
+      HalfReactionInput
+  }
 }
 </script>
 
