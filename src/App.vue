@@ -14,7 +14,7 @@
     <AddReactionBtn @add-reaction="addReaction" />
     <section class="result">
       <ul>
-        <li v-for="(equation, key) in result" :key="equation">
+        <li v-for="(equation, key) in result.value" :key="equation">
           <span v-html="key"></span> = <span v-html="equation"></span>
         </li>
       </ul>
@@ -23,72 +23,59 @@
 </template>
 
 <script>
+import { ref, reactive, onBeforeMount, watch } from "vue";
+import useProceed from "./composables/proceed.js";
 import ReactionInput from "./components/ReactionInput.vue";
 import AddReactionBtn from "./components/AddReactionBtn.vue";
 
 export default {
-  name: "App",
-  components: {
-    ReactionInput,
-    AddReactionBtn,
-  },
-  beforeMount() {
-    this.proceed();
-  },
-  data() {
-    return {
-      reactions: [
-        {
-          id: 0,
-          equation: {
-            reactants: [
-              {
-                coef: 1,
-                substance: "A",
-              },
-            ],
-            products: [
-              {
-                coef: 1,
-                substance: "B",
-              },
-            ],
-          },
-          reversible: false,
+  name: "ChemistryApp",
+  setup() {
+    let reactionId = 0; // To have the unique id for key binding
+    const reactions = ref([
+      {
+        id: reactionId++,
+        equation: {
+          reactants: [
+            {
+              coef: 1,
+              substance: "A",
+            },
+          ],
+          products: [
+            {
+              coef: 1,
+              substance: "B",
+            },
+          ],
         },
-        {
-          id: 1,
-          equation: {
-            reactants: [
-              {
-                coef: 1,
-                substance: "B",
-              },
-            ],
-            products: [
-              {
-                coef: 2,
-                substance: "C",
-              },
-            ],
-          },
-          reversible: true,
+        reversible: false,
+      },
+      {
+        id: reactionId++,
+        equation: {
+          reactants: [
+            {
+              coef: 1,
+              substance: "B",
+            },
+          ],
+          products: [
+            {
+              coef: 2,
+              substance: "C",
+            },
+          ],
         },
-      ],
-      result: {},
-      reactionId: 2,
-    };
-  },
-  watch: {
-    reactions: {
-      handler: "proceed",
-      deep: true,
-    },
-  },
-  methods: {
-    addReaction() {
-      this.reactions.push({
-        id: this.getReactionId(),
+        reversible: true,
+      },
+    ]);
+    const result = reactive({});
+    const proceed = useProceed(result, reactions);
+
+    const addReaction = () => {
+      reactions.value.push({
+        id: reactionId++,
         equation: {
           reactants: [
             {
@@ -105,108 +92,33 @@ export default {
         },
         reversible: false,
       });
-    },
+    };
 
-    getReactionId() {
-      return this.reactionId++;
-    },
+    const removeReaction = (reactionNumber) => {
+      reactions.value.splice(reactionNumber, 1);
+    };
 
-    removeReaction(reactionNumber) {
-      this.reactions.splice(reactionNumber, 1);
-    },
+    const toggleReactionType = (reactionNumber) => {
+      reactions.value[reactionNumber].reversible =
+        !reactions.value[reactionNumber].reversible;
+    };
 
-    toggleReactionType(reactionNumber) {
-      this.reactions[reactionNumber].reversible =
-        !this.reactions[reactionNumber].reversible;
-    },
+    watch(reactions, proceed, { deep: true });
 
-    proceed() {
-      const addends = getAddends(this.reactions);
-      this.result = {};
+    onBeforeMount(proceed);
 
-      this.reactions.forEach((reaction, reactionNumber) => {
-        for (let halfReaction in reaction.equation) {
-          reaction.equation[halfReaction].forEach((participant) => {
-            if (!this.result[participant.substance]) {
-              this.result[participant.substance] = "";
-            }
-
-            this.result[participant.substance] += getAddendsWithSignAndCoef(
-              reactionNumber,
-              halfReaction,
-              reaction.reversible,
-              participant.coef
-            );
-          });
-        }
-
-        function getAddendsWithSignAndCoef(
-          reactionNumber,
-          halfReaction,
-          isReversible,
-          participantCoef
-        ) {
-          let addendWithSignAndCoef = "";
-          participantCoef = participantCoef === 1 ? "" : participantCoef;
-
-          if (halfReaction === "reactants") {
-            addendWithSignAndCoef =
-              "-" + participantCoef + addends[reactionNumber][0];
-          } else {
-            addendWithSignAndCoef =
-              "+" + participantCoef + addends[reactionNumber][0];
-          }
-
-          if (isReversible) {
-            if (halfReaction === "reactants") {
-              addendWithSignAndCoef +=
-                "+" + participantCoef + addends[reactionNumber][1];
-            } else {
-              addendWithSignAndCoef +=
-                "-" + participantCoef + addends[reactionNumber][1];
-            }
-          }
-
-          return addendWithSignAndCoef;
-        }
-      });
-
-      function getAddends(reactions) {
-        const addends = [];
-        reactions.forEach((reaction, reactionNumber) => {
-          let addend =
-            "k" + (reactionNumber + 1) + getAddend(reaction.equation.reactants);
-
-          addends.push([addend]);
-
-          if (reaction.reversible) {
-            // Reversible reaction
-            addend =
-              "k<sub>" +
-              (reactionNumber + 1) +
-              "</sub><sup>'</sup>" +
-              getAddend(reaction.equation.products);
-            addends[reactionNumber].push(addend);
-          }
-        });
-
-        return addends;
-
-        function getAddend(halfReaction) {
-          let result = "";
-
-          halfReaction.forEach((item) => {
-            result +=
-              "C<sub>" +
-              item.substance +
-              "</sub>" +
-              (item.coef != 1 ? "<sup>" + item.coef + "</sup>" : "");
-          });
-
-          return result;
-        }
-      }
-    },
+    return {
+      reactionId,
+      reactions,
+      result,
+      addReaction,
+      removeReaction,
+      toggleReactionType,
+    };
+  },
+  components: {
+    ReactionInput,
+    AddReactionBtn,
   },
 };
 </script>
