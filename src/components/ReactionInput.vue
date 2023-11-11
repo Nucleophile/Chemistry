@@ -5,7 +5,7 @@
     />
     
     <button type="button" @click="$emit('toggleReactionType', reactionNumber - 1)">
-      <span v-if="reaction[0]">↔</span>
+      <span v-if="reaction.reversible">↔</span>
       <span v-else>→</span>
     </button>
 
@@ -28,13 +28,13 @@ export default {
     name: 'ReactionInput',
     data() {
         return {
-            reactants: this.reaction[1],
-            products: this.reaction[2]
+            reactants: this.reaction.equation.reactants,
+            products: this.reaction.equation.products
         };
     },
     props: {
         reactionNumber: Number,
-        reaction: Array,
+        reaction: Object,
         reactions: Array
     },
     methods: {

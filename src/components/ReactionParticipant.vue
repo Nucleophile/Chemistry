@@ -41,8 +41,10 @@ export default {
   methods: {
     participantInput(participant, key, newValue) {
       participant[key] = newValue;
+      this.proceed();
     }
   },
+  inject: ['proceed'],
   components: {
     ReactionParticipantInput
   },

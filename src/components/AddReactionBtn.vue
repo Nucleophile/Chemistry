@@ -5,9 +5,6 @@
 <script>
 export default {
   name: 'AddReactionBtn',
-  props: {
-    // msg: String
-  },
   emits: ['addReaction']
 }
 </script>
