@@ -9,9 +9,9 @@
 <script>
 export default {
   name: 'ReactionParticipantInput',
-  data() {
+  setup(props) {
     return {
-        value: this.inputValue
+      value: props.inputValue
     }
   },
   props: {

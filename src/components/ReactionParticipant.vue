@@ -25,30 +25,31 @@
 </template>
 
 <script>
+import { computed } from "vue";
 import ReactionParticipantInput from "./ReactionParticipantInput.vue";
 
 export default {
   name: "ReactionParticipant",
-  data() {
+  setup(props) {
+    const showRemoveParticipantBtn = computed(() => {
+      return props.participants.length > 1;
+    });
+
+    const participantInput = (participant, key, newValue) => {
+      participant[key] = newValue;
+    };
+
     return {
-      coef: this.participant.coef,
-      substance: this.participant.substance,
+      coef: props.participant.coef,
+      substance: props.participant.substance,
+      showRemoveParticipantBtn,
+      participantInput,
     };
   },
   props: {
     participants: Array,
     participant: Object,
     index: Number,
-  },
-  computed: {
-    showRemoveParticipantBtn() {
-      return this.participants.length > 1;
-    },
-  },
-  methods: {
-    participantInput(participant, key, newValue) {
-      participant[key] = newValue;
-    },
   },
   components: {
     ReactionParticipantInput,
@@ -60,6 +61,7 @@ export default {
 <style>
 .participant {
   position: relative;
+  display: flex;
   padding: 0 1rem;
 }
 </style>

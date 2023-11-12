@@ -9,7 +9,7 @@
       />
       <span v-if="index < participants.length - 1">+</span>
     </template>
-    <button @click="addReactionParticipant(participants)" class="add-btn"></button>
+    <button @click="addReactionParticipant(participants)" class="add-btn add-reaction-participant"></button>
   </div>
 </template>
 
@@ -18,35 +18,41 @@ import ReactionParticipant from "./ReactionParticipant.vue";
 
 export default {
   name: "HalfReactionInput",
-  data() {
-    return {};
-  },
-  props: {
-    participants: Array,
-  },
-  methods: {
-    addReactionParticipant(participants) {
+  setup() {
+    const addReactionParticipant = (participants) => {
       participants.push({
         coef: 1,
         substance: "A",
       });
-    },
-    removeReactionParticipant(participants, index) {
+    };
+
+    const removeReactionParticipant = (participants, index) => {
       participants.splice(index, 1);
-    },
+    }
+
+    return {
+      addReactionParticipant,
+      removeReactionParticipant
+    }
   },
-  emits: [],
+  props: {
+    participants: Array,
+  },
   components: {
     ReactionParticipant,
   },
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 .half-reaction {
   position: relative;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
+}
+.add-reaction-participant {
+  position: absolute;
+  right: 0;
 }
 </style>

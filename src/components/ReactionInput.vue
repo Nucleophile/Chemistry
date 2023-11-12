@@ -22,10 +22,10 @@ import HalfReactionInput from "./HalfReactionInput.vue";
 
 export default {
   name: "ReactionInput",
-  data() {
+  setup(props) {
     return {
-      reactants: this.reaction.equation.reactants,
-      products: this.reaction.equation.products,
+      reactants: props.reaction.equation.reactants,
+      products: props.reaction.equation.products,
     };
   },
   props: {
@@ -33,7 +33,6 @@ export default {
     reaction: Object,
     reactionsNumber: Number,
   },
-  methods: {},
   emits: ["toggleReactionType", "removeReaction"],
   components: {
     HalfReactionInput,
@@ -45,6 +44,7 @@ export default {
 .reaction-input {
   position: relative;
   display: flex;
+  margin-left: -15px;
 }
 .arrow-btn::before,
 .arrow-btn.reversible:hover::before {
