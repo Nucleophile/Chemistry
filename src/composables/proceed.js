@@ -1,4 +1,4 @@
-export default function useProceed(result, reactions) {
+export default function useProceed(reactions, result) {
   return function proceed() {
     const addends = getAddends(reactions.value);
     result.value = {};
@@ -6,11 +6,16 @@ export default function useProceed(result, reactions) {
     reactions.value.forEach((reaction, reactionNumber) => {
       for (let halfReaction in reaction.equation) {
         reaction.equation[halfReaction].forEach((participant) => {
+
           if (!result.value[participant.substance]) {
-            result.value[participant.substance] = "";
+            result.value[participant.substance] = {
+              leftPart: `&part;C<sub>${participant.substance}</sub>/&part;&tau;`,
+              rightPart: ''
+            };
           }
 
-          result.value[participant.substance] += getAddendsWithSignAndCoef(
+          result.value[participant.substance].rightPart += getAddendsWithSignAndCoef(
+            result.value[participant.substance].rightPart,
             reactionNumber,
             halfReaction,
             reaction.reversible,
@@ -24,6 +29,7 @@ export default function useProceed(result, reactions) {
 }
 
 function getAddendsWithSignAndCoef(
+  currentValue,
   reactionNumber,
   halfReaction,
   isReversible,
@@ -34,18 +40,21 @@ function getAddendsWithSignAndCoef(
   participantCoef = participantCoef === 1 ? "" : participantCoef;
 
   if (halfReaction === "reactants") {
-    addendWithSignAndCoef = "-" + participantCoef + addends[reactionNumber][0];
+    const space = currentValue ? " " : ""; // if current addend is first in response string, we don't need " " between  minus and text
+    addendWithSignAndCoef =
+      " &minus;" + space + participantCoef + addends[reactionNumber][0];
   } else {
-    addendWithSignAndCoef = "+" + participantCoef + addends[reactionNumber][0];
+    const plus = currentValue ? " + " : ""; // if current addend is first in response string, we don't need "+" before it
+    addendWithSignAndCoef = plus + participantCoef + addends[reactionNumber][0];
   }
 
   if (isReversible) {
     if (halfReaction === "reactants") {
       addendWithSignAndCoef +=
-        "+" + participantCoef + addends[reactionNumber][1];
+        " + " + participantCoef + addends[reactionNumber][1];
     } else {
       addendWithSignAndCoef +=
-        "-" + participantCoef + addends[reactionNumber][1];
+        " &minus; " + participantCoef + addends[reactionNumber][1];
     }
   }
 
@@ -55,17 +64,16 @@ function getAddendsWithSignAndCoef(
 function getAddends(reactions) {
   const addends = [];
   reactions.forEach((reaction, reactionNumber) => {
-    let addend =
-      "k" + (reactionNumber + 1) + getAddend(reaction.equation.reactants);
+    let addend = `k<sub>${reactionNumber + 1}</sub>${getAddend(
+      reaction.equation.reactants
+    )}`;
 
     addends.push([addend]);
 
     if (reaction.reversible) {
-      addend =
-        "k<sub>" +
-        (reactionNumber + 1) +
-        "</sub><sup>'</sup>" +
-        getAddend(reaction.equation.products);
+      addend = `k′<sub>${reactionNumber + 1}</sub>${getAddend(
+        reaction.equation.products
+      )}`;
       addends[reactionNumber].push(addend);
     }
   });
@@ -77,11 +85,9 @@ function getAddend(halfReaction) {
   let result = "";
 
   halfReaction.forEach((item) => {
-    result +=
-      "C<sub>" +
-      item.substance +
-      "</sub>" +
-      (item.coef != 1 ? "<sup>" + item.coef + "</sup>" : "");
+    result += `C<sub>${item.substance}</sub>${
+      item.coef != 1 ? "<sup>" + item.coef + "</sup>" : ""
+    }`;
   });
 
   return result;

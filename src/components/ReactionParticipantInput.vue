@@ -30,5 +30,10 @@ export default {
   input {
     border: 0;
     border-bottom: 1px solid #000;
+    width: 2rem;
+    font-size: 1rem;
+  }
+  input[type="text"] {
+    text-align: center;
   }
 </style>

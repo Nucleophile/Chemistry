@@ -1,4 +1,5 @@
 <template>
+  <div class="half-reaction">
     <template v-for="(participant, index) in participants" :key="participant">
       <ReactionParticipant
         :participant="participant"
@@ -8,47 +9,44 @@
       />
       <span v-if="index < participants.length - 1">+</span>
     </template>
-
-    <AddReactionParticipantBtn
-      @add-reaction-participant="addReactionParticipant"
-      :participants="participants"
-    />
+    <button @click="addReactionParticipant(participants)" class="add-btn"></button>
+  </div>
 </template>
 
 <script>
-
-import ReactionParticipant from './ReactionParticipant.vue';
-import AddReactionParticipantBtn from './AddReactionParticipantBtn.vue';
+import ReactionParticipant from "./ReactionParticipant.vue";
 
 export default {
-    name: 'HalfReactionInput',
-    data() {
-        return {
-        };
+  name: "HalfReactionInput",
+  data() {
+    return {};
+  },
+  props: {
+    participants: Array,
+  },
+  methods: {
+    addReactionParticipant(participants) {
+      participants.push({
+        coef: 1,
+        substance: "A",
+      });
     },
-    props: {
-        participants: Array
+    removeReactionParticipant(participants, index) {
+      participants.splice(index, 1);
     },
-    methods: {
-        addReactionParticipant(participants) {
-          participants.push({
-            coef: 1,
-            substance: 'A'
-          });
-        },
-        removeReactionParticipant(participants, index) {
-          participants.splice(index, 1);
-        }
-    },
-    emits: [],
-    components: {
-      ReactionParticipant,
-      AddReactionParticipantBtn
-    }
-}
+  },
+  emits: [],
+  components: {
+    ReactionParticipant,
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
+<style>
+.half-reaction {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
 </style>
