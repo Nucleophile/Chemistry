@@ -2,19 +2,25 @@ export default function useProceed(reactions, result) {
   return function proceed() {
     const addends = getAddends(reactions.value);
     result.value = {};
-
+    console.log(reactions.value);
     reactions.value.forEach((reaction, reactionNumber) => {
       for (let halfReaction in reaction.equation) {
         reaction.equation[halfReaction].forEach((participant) => {
-
           if (!result.value[participant.substance]) {
-            result.value[participant.substance] = {
-              leftPart: `&part;C<sub>${participant.substance}</sub>/&part;&tau;`,
-              rightPart: ''
-            };
+            result.value[participant.substance] = `
+              <math>
+                <mfrac>
+                  <msub>
+                    <mi>&part;C</mi>
+                    <mi>${participant.substance}</mi>
+                  </msub>
+                  <mi>&part;&tau;</mi>
+                </mfrac>
+                <mo>=</mo>
+            `;
           }
 
-          result.value[participant.substance].rightPart += getAddendsWithSignAndCoef(
+          result.value[participant.substance] += getAddendsWithSignAndCoef(
             result.value[participant.substance].rightPart,
             reactionNumber,
             halfReaction,
@@ -25,6 +31,10 @@ export default function useProceed(reactions, result) {
         });
       }
     });
+    for (let substance in result.value) {
+      result.value[substance] += "</math>";
+    }
+    console.log(result);
   };
 }
 
@@ -37,24 +47,24 @@ function getAddendsWithSignAndCoef(
   addends
 ) {
   let addendWithSignAndCoef = "";
-  participantCoef = participantCoef === 1 ? "" : participantCoef;
+  participantCoef = participantCoef === 1 ? "" : `<mn>${participantCoef}</mn>`;
 
   if (halfReaction === "reactants") {
-    const space = currentValue ? " " : ""; // if current addend is first in response string, we don't need " " between  minus and text
+    // const space = currentValue ? " " : ""; // if current addend is first in response string, we don't need " " between  minus and text
     addendWithSignAndCoef =
-      " &minus;" + space + participantCoef + addends[reactionNumber][0];
+      "<mo>&minus;</mo>" + participantCoef + addends[reactionNumber][0];
   } else {
-    const plus = currentValue ? " + " : ""; // if current addend is first in response string, we don't need "+" before it
+    const plus = currentValue ? "<mo>+</mo>" : ""; // if current addend is first in response string, we don't need "+" before it
     addendWithSignAndCoef = plus + participantCoef + addends[reactionNumber][0];
   }
 
   if (isReversible) {
     if (halfReaction === "reactants") {
       addendWithSignAndCoef +=
-        " + " + participantCoef + addends[reactionNumber][1];
+        "<mo>+</mo>" + participantCoef + addends[reactionNumber][1];
     } else {
       addendWithSignAndCoef +=
-        " &minus; " + participantCoef + addends[reactionNumber][1];
+        "<mo>&minus;</mo>" + participantCoef + addends[reactionNumber][1];
     }
   }
 
@@ -64,16 +74,23 @@ function getAddendsWithSignAndCoef(
 function getAddends(reactions) {
   const addends = [];
   reactions.forEach((reaction, reactionNumber) => {
-    let addend = `k<sub>${reactionNumber + 1}</sub>${getAddend(
-      reaction.equation.reactants
-    )}`;
+    let addend = `
+      <msub>
+        <mi>k</mi>
+        <mn>${reactionNumber + 1}</mn>
+      </msub>
+      ${getAddend(reaction.equation.reactants)}`;
 
     addends.push([addend]);
 
     if (reaction.reversible) {
-      addend = `k′<sub>${reactionNumber + 1}</sub>${getAddend(
-        reaction.equation.products
-      )}`;
+      addend = `
+        <msubsup>
+          <mi>k</mi>
+          <mn>${reactionNumber + 1}</mn>
+          <mi>′</mi>
+        </msubsup>
+        ${getAddend(reaction.equation.products)}`;
       addends[reactionNumber].push(addend);
     }
   });
@@ -85,9 +102,12 @@ function getAddend(halfReaction) {
   let result = "";
 
   halfReaction.forEach((item) => {
-    result += `C<sub>${item.substance}</sub>${
-      item.coef != 1 ? "<sup>" + item.coef + "</sup>" : ""
-    }`;
+    result += `
+      <msubsup>
+        <mi>C</mi>
+        <mi>${item.substance}</mi>
+        <mn>${item.coef != 1 ? item.coef : ""}</mn>
+      </msubsup>`;
   });
 
   return result;

@@ -18,10 +18,7 @@
     </section>
     <section class="result">
       <ul>
-        <li v-for="equation in result.value" :key="equation">
-          <span v-html="equation.leftPart"></span> =
-          <span v-html="equation.rightPart"></span>
-        </li>
+        <li v-for="(equation, substance) in result.value" :key="substance" v-html="equation"></li>
       </ul>
     </section>
   </div>
@@ -229,7 +226,6 @@ button {
   display: flex;
 }
 .result {
-  font-family: serif;
   padding-left: 15px;
 }
 .result ul,
