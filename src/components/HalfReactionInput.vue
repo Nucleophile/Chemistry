@@ -1,6 +1,6 @@
 <template>
   <div class="half-reaction">
-    <template v-for="(participant, index) in participants" :key="participant">
+    <template v-for="(participant, index) in participants" :key="index">
       <ReactionParticipant
         :participant="participant"
         :index="index"

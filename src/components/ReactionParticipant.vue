@@ -1,21 +1,7 @@
 <template>
   <div class="participant">
-    <ReactionParticipantInput
-      type="number"
-      :inputValue="coef"
-      inputValueName="coef"
-      :index="index"
-      :participant="participant"
-      @participant-input="participantInput"
-    />
-    <ReactionParticipantInput
-      type="text"
-      :inputValue="substance"
-      inputValueName="substance"
-      :index="index"
-      :participant="participant"
-      @participant-input="participantInput"
-    />
+    <input type="number" v-model="$props.participant.coef" />
+    <input type="text" v-model="$props.participant.substance" />
     <button
       v-if="showRemoveParticipantBtn"
       @click="$emit('removeReactionParticipant', participants, index)"
@@ -26,7 +12,6 @@
 
 <script>
 import { computed } from "vue";
-import ReactionParticipantInput from "./ReactionParticipantInput.vue";
 
 export default {
   name: "ReactionParticipant",
@@ -51,9 +36,6 @@ export default {
     participant: Object,
     index: Number,
   },
-  components: {
-    ReactionParticipantInput,
-  },
   emits: ["removeReactionParticipant"],
 };
 </script>
@@ -63,5 +45,14 @@ export default {
   position: relative;
   display: flex;
   padding: 0 1rem;
+}
+input {
+  border: 0;
+  border-bottom: 1px solid #000;
+  width: 2rem;
+  font-size: 1rem;
+}
+input[type="text"] {
+  text-align: center;
 }
 </style>
