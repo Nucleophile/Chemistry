@@ -1,27 +1,42 @@
 <template>
-  <div class="content">
-    <section class="reactions">
-      <div class="wrapper">
-        <ul>
-          <li v-for="(reaction, index) in reactions" :key="reaction.id">
-            <ReactionInput
-              :reactionNumber="index + 1"
-              :reaction="reaction"
-              :reactionsNumber="reactions.length"
-              @remove-reaction="removeReaction"
-              @toggle-reaction-type="toggleReactionType"
-            />
-          </li>
-        </ul>
-        <button @click="addReaction" class="add-btn"></button>
-      </div>
-    </section>
-    <section class="result">
-      <ul>
-        <li v-for="(equation, substance) in result.value" :key="substance" v-html="equation"></li>
-      </ul>
-    </section>
-  </div>
+  <acticle class="app">
+    <header class="app__header">
+      <h1 class="app__heading">
+        Generator of kinetic equations of chemical reactions
+      </h1>
+    </header>
+    <main class="app__main">
+      <section class="section reactions">
+        <div class="section__content">
+          <h2 class="section__heading">Chemical reactions</h2>
+          <ul class="reactions__list">
+            <li v-for="(reaction, index) in reactions" :key="reaction.id">
+              <ReactionInput
+                :reactionNumber="index + 1"
+                :reaction="reaction"
+                :reactionsNumber="reactions.length"
+                @remove-reaction="removeReaction"
+                @toggle-reaction-type="toggleReactionType"
+              />
+            </li>
+          </ul>
+          <button @click="addReaction" class="add-btn"></button>
+        </div>
+      </section>
+      <section class="section result">
+        <div class="section__content">
+          <h2 class="section__heading">Kinetic equations</h2>
+          <ul class="result__list">
+            <li
+              v-for="(equation, substance) in result.value"
+              :key="substance"
+              v-html="equation"
+            ></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+  </acticle>
 </template>
 
 <script>
@@ -133,27 +148,14 @@ export default {
 }
 body {
   margin: 0;
+  padding: 1rem;
   font-family: Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-}
-.content {
-  max-width: 1020px;
-  margin: 0 auto;
-  padding: 15px;
-  display: flex;
+  color: #000;
 }
 ul {
   list-style: none;
   margin: 0;
   padding: 0;
-}
-li:not(:last-child) {
-  margin-bottom: 1rem;
-}
-label {
-  display: block;
 }
 button {
   border: none;
@@ -161,6 +163,57 @@ button {
   padding: 0;
   cursor: pointer;
   font-size: 1rem;
+}
+.app {
+  display: block;
+  max-width: 1020px;
+  margin: 0 auto;
+  border: 0.0625rem solid #cce4ff;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.16);
+}
+.app__header {
+  padding: 2rem;
+  border-bottom: 0.0625rem solid #cce4ff;
+}
+.app__heading {
+  font-size: 1.5rem;
+  margin: 0;
+  text-align: center;
+}
+.app__main {
+  display: flex;
+  background: #f7fafd;
+  padding: 0 16px;
+}
+.section {
+  width: 50%;
+  padding: 2rem 16px;
+}
+.section__content {
+  height: 100%;
+  padding: 1.5rem 24px;
+  border: 0.1875rem solid #c7def4;
+  background: #fff;
+  border-radius: 0.5rem;
+}
+.result {
+  font-size: 1.25rem;
+}
+.section__heading {
+  font-size: 1.25rem;
+  margin: 0 0 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 0.0625rem solid #cce4ff;
+}
+.reactions__list li {
+  display: flex;
+}
+.reactions__list li:not(:last-child) {
+  margin-bottom: 1.5rem;
+}
+.result__list li:not(:last-child) {
+  margin-bottom: 1.25rem;
 }
 .add-btn,
 .remove-btn {
@@ -213,25 +266,5 @@ button {
   width: 1px;
   height: 8px;
   top: 3px;
-}
-.reactions,
-.result {
-  width: 50%;
-}
-.reactions {
-  position: relative;
-  padding-right: 15px;
-}
-.reactions li {
-  display: flex;
-}
-.result {
-  padding-left: 15px;
-}
-.result ul,
-.reactions .wrapper {
-  border: 1px solid #000;
-  padding: 15px;
-  height: 100%;
 }
 </style>
