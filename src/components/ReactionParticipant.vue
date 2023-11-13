@@ -20,15 +20,10 @@ export default {
       return props.participants.length > 1;
     });
 
-    const participantInput = (participant, key, newValue) => {
-      participant[key] = newValue;
-    };
-
     return {
       coef: props.participant.coef,
       substance: props.participant.substance,
-      showRemoveParticipantBtn,
-      participantInput,
+      showRemoveParticipantBtn
     };
   },
   props: {
@@ -48,11 +43,20 @@ export default {
 }
 input {
   border: 0;
+  padding: 0;
   border-bottom: 1px solid #000;
   width: 2rem;
   font-size: 1rem;
 }
 input[type="text"] {
   text-align: center;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
 }
 </style>
