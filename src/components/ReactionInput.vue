@@ -36,7 +36,7 @@ export default {
   emits: ["toggleReactionType", "removeReaction"],
   components: {
     HalfReactionInput,
-  },
+  }
 };
 </script>
 
@@ -45,6 +45,9 @@ export default {
   position: relative;
   display: flex;
   margin-left: -15px;
+}
+.arrow-btn::before {
+  font-size: 1.125rem;
 }
 .arrow-btn::before,
 .arrow-btn.reversible:hover::before {

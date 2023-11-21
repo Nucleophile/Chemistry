@@ -1,7 +1,7 @@
 <template>
   <div class="participant">
-    <input type="number" v-model="$props.participant.coef" />
-    <input type="text" v-model="$props.participant.substance" />
+    <ResponsiveInput inputType="number" v-model="$props.participant.coef"/>
+    <ResponsiveInput inputType="text" v-model="$props.participant.substance"/>
     <button
       v-if="showRemoveParticipantBtn"
       @click="$emit('removeReactionParticipant', participants, index)"
@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import ResponsiveInput from "./ResponsiveInput.vue";
 import { computed } from "vue";
 
 export default {
@@ -21,8 +22,6 @@ export default {
     });
 
     return {
-      coef: props.participant.coef,
-      substance: props.participant.substance,
       showRemoveParticipantBtn
     };
   },
@@ -32,6 +31,9 @@ export default {
     index: Number,
   },
   emits: ["removeReactionParticipant"],
+  components: {
+    ResponsiveInput
+  }
 };
 </script>
 

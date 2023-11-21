@@ -65,7 +65,6 @@ function getAddendsWithSignAndCoef(
         "<mo>&minus;</mo>" + participantCoef + addends[reactionNumber][1];
     }
   }
-console.log(addendWithSignAndCoef)
   return addendWithSignAndCoef;
 }
 
