@@ -13,11 +13,8 @@
 <script>
 export default {
   name: "ResponsiveInput",
-  setup() {
-    return {};
-  },
   props: {
-    modelValue: String,
+    modelValue: [ String, Number ],
     inputType: String,
   },
   emits: ["update:modelValue"],
@@ -35,6 +32,8 @@ export default {
   }
   .responsive-input__input {
     position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     border: none;
     line-height: inherit;

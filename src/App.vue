@@ -1,5 +1,5 @@
 <template>
-  <acticle class="app">
+  <article class="app">
     <header class="app__header">
       <h1 class="app__heading">
         Generator of kinetic equations of chemical reactions
@@ -20,7 +20,13 @@
               />
             </li>
           </ul>
-          <button @click="addReaction" class="add-btn"></button>
+          <AnimatedButton
+            size="lg"
+            class="add-reaction-btn"
+            :staticBtn="true"
+            @button-click="addReaction"
+            >Add reaction</AnimatedButton
+          >
         </div>
       </section>
       <section class="section result">
@@ -36,13 +42,14 @@
         </div>
       </section>
     </main>
-  </acticle>
+  </article>
 </template>
 
 <script>
 import { ref, reactive, onBeforeMount, watch } from "vue";
 import useProceed from "./composables/proceed.js";
 import ReactionInput from "./components/ReactionInput.vue";
+import AnimatedButton from "./components/AnimatedButton.vue";
 
 export default {
   name: "ChemistryApp",
@@ -138,6 +145,7 @@ export default {
   },
   components: {
     ReactionInput,
+    AnimatedButton,
   },
 };
 </script>
@@ -151,6 +159,7 @@ body {
   padding: 1rem;
   font-family: Helvetica, Arial, sans-serif;
   color: #000;
+  line-height: 1.25;
 }
 ul {
   list-style: none;
@@ -163,14 +172,18 @@ button {
   padding: 0;
   cursor: pointer;
   font-size: 1rem;
+  line-height: inherit;
 }
 .app {
   display: block;
-  max-width: 1020px;
   margin: 0 auto;
   border: 0.0625rem solid #cce4ff;
   border-radius: 0.5rem;
   box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.16);
+
+  @media (min-width: 65.75rem) {
+    max-width: 63.75rem;
+  }
 }
 .app__header {
   padding: 2rem;
@@ -182,17 +195,15 @@ button {
   text-align: center;
 }
 .app__main {
-  display: flex;
   background: #f7fafd;
-  padding: 0 16px;
+  padding: 0 1rem;
 }
 .section {
-  width: 50%;
-  padding: 2rem 16px;
+  padding: 2rem 1rem;
 }
 .section__content {
   height: 100%;
-  padding: 1.5rem 24px;
+  padding: 1.5rem 1.5rem;
   border: 0.1875rem solid #c7def4;
   background: #fff;
   border-radius: 0.5rem;
@@ -206,65 +217,35 @@ button {
   padding-bottom: 1.5rem;
   border-bottom: 0.0625rem solid #cce4ff;
 }
-.reactions__list li {
+.reactions__list > li {
   display: flex;
-}
-.reactions__list li:not(:last-child) {
   margin-bottom: 1.5rem;
 }
-.result__list li:not(:last-child) {
+.result__list > li:not(:last-child) {
   margin-bottom: 1.25rem;
 }
-.add-btn,
-.remove-btn {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  transition: box-shadow 0.2s;
+.add-reaction-btn {
+  display: inline-block;
 }
-.add-btn:hover,
-.remove-btn:hover {
-  box-shadow: 0 0 0.25rem #555;
-}
-.remove-btn {
+.add-participant-btn {
   position: absolute;
-  top: -0.25rem;
-  right: 0.25rem;
+  left: 100%;
+  margin-left: -1.625rem;
 }
-.remove-btn::before,
-.remove-btn::after,
-.add-btn::before,
-.add-btn::after {
-  content: "";
-  position: absolute;
-  background: #000;
-}
-.remove-btn::before,
-.remove-btn::after,
-.add-btn::before {
-  width: 8px;
-  height: 1px;
-}
-.remove-btn::before,
-.remove-btn::after {
-  top: 50%;
-  left: 50%;
-}
-.remove-btn::before {
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-.remove-btn::after {
-  transform: translate(-50%, -50%) rotate(-45deg);
-}
-.add-btn {
+.arrow-btn {
   position: relative;
 }
-.add-btn::before {
-  left: 3px;
+@media (min-width: 56rem) {
+  .app__main {
+    display: flex;
+  }
+  .section {
+    width: 50%;
+  }
 }
-.add-btn::after {
-  width: 1px;
-  height: 8px;
-  top: 3px;
+@media (max-width: 55.9375rem) {
+  .result {
+    padding-top: 0;
+  }
 }
 </style>

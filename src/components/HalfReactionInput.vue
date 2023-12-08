@@ -1,20 +1,28 @@
 <template>
   <div class="half-reaction">
-    <template v-for="(participant, index) in participants" :key="index">
-      <ReactionParticipant
-        :participant="participant"
-        :index="index"
-        :participants="participants"
-        @remove-reaction-participant="removeReactionParticipant"
-      />
-      <span v-if="index < participants.length - 1">+</span>
-    </template>
-    <button @click="addReactionParticipant(participants)" class="add-btn add-reaction-participant"></button>
+    <ul class="half-reaction__list">
+      <template v-for="(participant, index) in participants" :key="index">
+        <ReactionParticipant
+          :participant="participant"
+          :index="index"
+          :participants="participants"
+          @remove-reaction-participant="removeReactionParticipant"
+        />
+        <li v-if="index < participants.length - 1">+</li>
+      </template>
+    </ul>
+    <AnimatedButton
+      size="xs"
+      class="add-participant-btn"
+      @button-click="addReactionParticipant(participants)"
+      >Add participant</AnimatedButton
+    >
   </div>
 </template>
 
 <script>
 import ReactionParticipant from "./ReactionParticipant.vue";
+import AnimatedButton from "./AnimatedButton.vue";
 
 export default {
   name: "HalfReactionInput",
@@ -28,31 +36,33 @@ export default {
 
     const removeReactionParticipant = (participants, index) => {
       participants.splice(index, 1);
-    }
+    };
 
     return {
       addReactionParticipant,
-      removeReactionParticipant
-    }
+      removeReactionParticipant,
+    };
   },
   props: {
     participants: Array,
   },
   components: {
     ReactionParticipant,
+    AnimatedButton,
   },
 };
 </script>
 
-<style>
+<style lang="scss">
 .half-reaction {
   position: relative;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-}
-.add-reaction-participant {
-  position: absolute;
-  right: 0;
+  padding-right: 1.75rem;
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+  }
 }
 </style>

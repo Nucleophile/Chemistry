@@ -1,16 +1,19 @@
 <template>
-  <div class="participant">
-    <ResponsiveInput inputType="number" v-model="$props.participant.coef"/>
-    <ResponsiveInput inputType="text" v-model="$props.participant.substance"/>
-    <button
+  <li class="participant">
+    <ResponsiveInput inputType="number" v-model="$props.participant.coef" />
+    <ResponsiveInput inputType="text" v-model="$props.participant.substance" />
+    <AnimatedButton
       v-if="showRemoveParticipantBtn"
-      @click="$emit('removeReactionParticipant', participants, index)"
-      class="remove-btn"
-    ></button>
-  </div>
+      class="remove-participant-btn"
+      size="xs"
+      type="remove"
+      @button-click="$emit('removeReactionParticipant', participants, index)"
+    >Remove participant</AnimatedButton>
+  </li>
 </template>
 
 <script>
+import AnimatedButton from "./AnimatedButton.vue";
 import ResponsiveInput from "./ResponsiveInput.vue";
 import { computed } from "vue";
 
@@ -22,7 +25,7 @@ export default {
     });
 
     return {
-      showRemoveParticipantBtn
+      showRemoveParticipantBtn,
     };
   },
   props: {
@@ -32,21 +35,25 @@ export default {
   },
   emits: ["removeReactionParticipant"],
   components: {
-    ResponsiveInput
-  }
+    ResponsiveInput,
+    AnimatedButton,
+  },
 };
 </script>
 
-<style>
+<style lang="scss">
 .participant {
   position: relative;
   display: flex;
-  padding: 0 1rem;
+  padding: 0 1.5rem 0 0.25rem;
+  &:only-of-type {
+    padding-right: .25rem;
+  }
 }
 input {
   border: 0;
   padding: 0;
-  border-bottom: 1px solid #000;
+  border-bottom: .0625rem solid #000;
   width: 2rem;
   font-size: 1rem;
 }
@@ -58,7 +65,13 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
+}
+.remove-participant-btn {
+  position: absolute;
+  left: 100%;
+  top: -.5rem;
+  margin-left: -1.375rem;
 }
 </style>
