@@ -186,7 +186,7 @@ button {
   }
 }
 .app__header {
-  padding: 2rem;
+  padding: 2rem 1rem;
   border-bottom: 0.0625rem solid #cce4ff;
 }
 .app__heading {
@@ -196,7 +196,6 @@ button {
 }
 .app__main {
   background: #f7fafd;
-  padding: 0 1rem;
 }
 .section {
   padding: 2rem 1rem;
@@ -236,8 +235,13 @@ button {
   position: relative;
 }
 @media (min-width: 56rem) {
+  .app__header {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
   .app__main {
     display: flex;
+    padding: 0 1rem;
   }
   .section {
     width: 50%;

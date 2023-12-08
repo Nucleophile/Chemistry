@@ -21,6 +21,7 @@ export default function useProceed(reactions, result) {
       }
     });
     for (let substance in result.value) {
+      // We wrap in <math> every addend, because Chrome implements only MathML Core spec. and not MatML, so it doesn't break lines inside <math> tag and behaves like it has white-space: nowrap style. See https://www.w3.org/TR/mathml-core/
       result.value[substance] = `
       <math>
         <mfrac>
@@ -31,8 +32,7 @@ export default function useProceed(reactions, result) {
           <mi>&part;&tau;</mi>
         </mfrac>
         <mo>=</mo>
-        ${result.value[substance]}
-      </math>`;
+      </math>${result.value[substance]}`;
     }
   };
 }
@@ -45,18 +45,23 @@ function getAddendsWithSignAndCoef(
   participantCoef,
   addends
 ) {
-  let addendWithSignAndCoef = "";
+  let addendWithSignAndCoef = "<math>";
   participantCoef = participantCoef === 1 ? "" : `<mn>${participantCoef}</mn>`;
 
   if (halfReaction === "reactants") {
-    addendWithSignAndCoef =
+    addendWithSignAndCoef +=
       "<mo>&minus;</mo>" + participantCoef + addends[reactionNumber][0];
   } else {
     const plus = currentValue ? "<mo>+</mo>" : ""; // if current addend is first in response string, we don't need "+" before it
-    addendWithSignAndCoef = plus + participantCoef + addends[reactionNumber][0];
+    addendWithSignAndCoef +=
+      plus + participantCoef + addends[reactionNumber][0];
   }
 
+  addendWithSignAndCoef += "</math>";
+
   if (isReversible) {
+    addendWithSignAndCoef += "<math>";
+
     if (halfReaction === "reactants") {
       addendWithSignAndCoef +=
         "<mo>+</mo>" + participantCoef + addends[reactionNumber][1];
@@ -64,6 +69,8 @@ function getAddendsWithSignAndCoef(
       addendWithSignAndCoef +=
         "<mo>&minus;</mo>" + participantCoef + addends[reactionNumber][1];
     }
+
+    addendWithSignAndCoef += "</math>";
   }
   return addendWithSignAndCoef;
 }
